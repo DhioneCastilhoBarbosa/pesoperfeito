@@ -37,7 +37,7 @@ export function SiginForm() {
 
           )}
         />
-        <Button className= "w-56"type="submit">login</Button>
+        <Button className= "w-96"type="submit">login</Button>
       </form>
     </Form>
   )

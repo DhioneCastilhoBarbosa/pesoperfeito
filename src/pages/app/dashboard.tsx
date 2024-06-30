@@ -62,7 +62,7 @@ export function Dashboard() {
           <thead className='rounded-lg'>
             <tr>
               <TableHearder className='rounded-tl-lg' style={{width:64}}>
-                <input type="checkbox" className='size-4 bg-indigo-600/20 rounded border-indigo-600/10' />
+                
               </TableHearder>
               <TableHearder>Ticket</TableHearder>
               <TableHearder>Cliente</TableHearder>
