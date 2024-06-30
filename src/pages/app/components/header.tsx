@@ -13,7 +13,7 @@ export function Header(){
       </div>
      
       <nav className="flex items-center gap-5">
-         <NavLink to={"/sign-in"}><LogOut/></NavLink>
+         <NavLink to={"/"}><LogOut/></NavLink>
       </nav>
     </div>
   )

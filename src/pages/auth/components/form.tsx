@@ -37,7 +37,7 @@ export function SiginForm() {
     event.preventDefault()
     if(email==="demostracao@pesoperfeito.com.br" && password==='admin123'){
       
-      navigate('/')
+      navigate('/tickest')
     }
     else{
       toast.error('Usuario ou senha incorreto!')
