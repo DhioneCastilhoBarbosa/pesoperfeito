@@ -14,7 +14,6 @@ interface Ticket {
   tare: string;
 }
 
-
 const formatDate = (date: Date): string => {
   return date.toISOString().split('.')[0].replace('T', ' ');
 }
@@ -35,6 +34,8 @@ export const tickets: Ticket[] = Array.from({ length: 200 }).map((): Ticket => {
   };
 });
 
+// Ordenar os tickets pela data e hora mais recente
+tickets.sort((a, b) => new Date(b.data_hora).getTime() - new Date(a.data_hora).getTime());
 
 export function paginate(array: Ticket[], pageSize: number): Ticket[][] {
   return array.reduce((acc: Ticket[][], val: Ticket, i: number) => {
@@ -44,4 +45,12 @@ export function paginate(array: Ticket[], pageSize: number): Ticket[][] {
 
     return acc;
   }, []);
+}
+
+
+export function filterByDate(array: Ticket[], startDate: Date, endDate: Date): Ticket[] {
+  return array.filter(ticket => {
+    const ticketDate = new Date(ticket.data_hora);
+    return ticketDate >= startDate && ticketDate <= endDate;
+  });
 }
