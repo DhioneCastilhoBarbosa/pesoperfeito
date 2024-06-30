@@ -76,17 +76,15 @@ export function Dashboard() {
   };
 
   return (
-    <div>
+    <div className=' flex-1 z-0 mt-20'>
       <Helmet title="Tickets" />
-      <div className='flex flex-col gap-4 mb-20'>
+      <div className='flex flex-col gap-4 mb-20 relative'>
 
-      <div className='flex items-center gap-3'>
+      <div className='flex  items-center gap-3'>
             <Ticket className='rotate-45 size-10'/>
             <h1 className='text-2xl font-bold'>Tickets</h1>
            </div>
 
-        
-        
         <div className='flex gap-3 items-center justify-between mb-1'>
            
           <div className='flex items-center gap-3'>
