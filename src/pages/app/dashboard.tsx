@@ -76,7 +76,7 @@ export function Dashboard() {
   };
 
   return (
-    <div className=' flex-1 z-0 mt-20'>
+    <div className=' flex-1 z-0 mt-20 px-4'>
       <Helmet title="Tickets" />
       <div className='flex flex-col gap-4 mb-20 relative'>
 

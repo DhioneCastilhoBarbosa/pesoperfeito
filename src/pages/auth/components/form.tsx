@@ -1,5 +1,6 @@
 
 import { Button } from "@/components/ui/button"
+import { Eye, EyeClosed, EyeOff } from 'lucide-react'
 import {
   Form,
   FormControl,
@@ -20,7 +21,9 @@ export function SiginForm() {
   const form = useForm()
   const[email,setEmail]= useState('')
   const[password, SetPassword]=useState('')
+  const [showPassword, setShowPassword] = useState(false);
   const navigate = useNavigate()
+ 
 
  
   function handleEmail(event: React.ChangeEvent<HTMLInputElement>){
@@ -45,6 +48,8 @@ export function SiginForm() {
     
   }
 
+  const togglePasswordVisibility = () => setShowPassword(!showPassword);
+
 
   return (
     <Form {...form}>
@@ -60,7 +65,22 @@ export function SiginForm() {
               </FormControl>
               <FormLabel>Password</FormLabel>
               <FormControl>
-                <Input type="password" placeholder="password" onChange={handlePassword} />
+              <div style={{ position: 'relative', display: 'flex', alignItems: 'center' }}>
+                <Input type={showPassword ? "text" : "password"} placeholder="password" onChange={handlePassword} style={{ paddingRight: '2rem' }}  />
+                <button
+                    type="button"
+                    onClick={togglePasswordVisibility}
+                    style={{
+                      position: 'absolute',
+                      right: '1rem',
+                      background: 'none',
+                      border: 'none',
+                      cursor: 'pointer',
+                    }}
+                  >
+                    {showPassword ? <EyeClosed /> : <Eye />}
+                </button>
+              </div>
               </FormControl>
               <FormMessage />
             </FormItem>
@@ -69,6 +89,7 @@ export function SiginForm() {
         />
         <Button className= "w-96"type="submit">login</Button>
       </form>
+      
     </Form>
   )
 }
