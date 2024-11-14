@@ -13,7 +13,7 @@ import { Eye, EyeClosed } from "lucide-react"
 import { useState } from "react"
 import { useForm } from "react-hook-form"
 import { useNavigate } from "react-router-dom"
-import{toast} from 'sonner'
+//import{toast} from 'sonner'
 
 
 
@@ -22,7 +22,7 @@ export function RegisterForm() {
   const[email,setEmail]= useState('')
   const[username,setUsername]= useState('')
   const[password, SetPassword]=useState('')
-  const[confirmPassword, SetConfirmPassword]=useState('')
+  //const[confirmPassword, SetConfirmPassword]=useState('')
   const [showPassword, setShowPassword] = useState(false);
   const [showConfirmPassword, setShowConfirmPassword] = useState(false);
   const navigate = useNavigate()
@@ -34,7 +34,7 @@ export function RegisterForm() {
   }
 
   function handleUsername(event: React.ChangeEvent<HTMLInputElement>){
-    SetPassword(event.target.value)
+    setUsername(event.target.value)
     console.log(username)
   }
 
@@ -44,15 +44,16 @@ export function RegisterForm() {
   }
 
   function handleConfirmPassword(event: React.ChangeEvent<HTMLInputElement>){
-    SetPassword(event.target.value)
+    (event.target.value)
     console.log(password)
   }
 
   async function handleClickRegister(event: React.FormEvent<HTMLFormElement>){
     event.preventDefault()
     
-    
+    navigate("/")
   }
+  
 
   const togglePasswordVisibilityPassword = () => setShowPassword(!showPassword);
   const togglePasswordVisibilityConfirmPassword = () => setShowConfirmPassword(!showConfirmPassword);
