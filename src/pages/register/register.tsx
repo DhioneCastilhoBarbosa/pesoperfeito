@@ -19,14 +19,15 @@ export function Register(){
             <Weight size={150}/>
             <h1 className='text-md font-semibold'>Peso Perfeito</h1>
           </div>
-          <div className='mb-4 flex flex-col items-center'>
-          <p className="mb-4 font-bold text-lg">Cria a sua conta para acesso.</p>
-            <RegisterForm/>
+          <div className='flex flex-col items-center gap-4'>
+            <p className="mb-4 font-bold text-lg">Cria a sua conta para acesso.</p>
+              <RegisterForm/>
+            <div className='flex gap-2 text-sm'>
+              <p>Ja tem uma conta? </p>
+              <button className='font-bold mb-4' onClick={handleClickRegister}>Faca o login</button>
+            </div>
           </div>
-          <div className='flex gap-2 text-sm'>
-          <p>Ja tem uma conta? </p>
-          <button className='font-bold mb-4' onClick={handleClickRegister}>Faca o login</button>
-          </div>
+          
       </div>
       <div className='flex flex-row items-center justify-center hidden md:block lg:mr-36 md:mr-20'>
         <img src={Img} alt=""  className='lg:h-[700px] md:h-[500px] sm:h-[400px]'/>

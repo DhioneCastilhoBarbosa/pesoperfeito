@@ -10,7 +10,7 @@ export function App() {
   return (
     <HelmetProvider>
       <Helmet titleTemplate="%s | Peso-Perfeito" />
-      <Toaster richColors position="bottom-left"/>
+      <Toaster richColors position="top-right"/>
       <RouterProvider router={router} />
     </HelmetProvider>
   )

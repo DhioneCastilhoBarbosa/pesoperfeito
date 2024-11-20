@@ -14,6 +14,8 @@ import { useState } from "react"
 import { useForm } from "react-hook-form"
 import { useNavigate } from "react-router-dom"
 import{toast} from 'sonner'
+import api from "@/services/api"
+import { AxiosError } from 'axios';
 
 
 
@@ -38,14 +40,37 @@ export function SiginForm() {
 
   async function handleClickLogin(event: React.FormEvent<HTMLFormElement>){
     event.preventDefault()
-    if(email==="demostracao@pesoperfeito.com.br" && password==='admin123'){
+    
+    try{
       
+      const response  = await api.post('/api/login',{email, password})
+      localStorage.removeItem('token');
+      localStorage.setItem('token', response.data.token)
+      toast.success(`Bem-vindo,${response.data.username}`)
       navigate('/tickest')
     }
-    else{
-      toast.error('Usuario ou senha incorreto!')
+    catch(error){
+      if (error instanceof AxiosError) {
+        // Verificar o status da resposta
+        switch (error.response?.status) {
+          case 400:
+            toast.error('Credenciais inválidas. Por favor, tente novamente.');
+            break;
+          case 403:
+            toast.info('Usuário desativado. Entre em contato com o administrador.');
+            break;
+          case 500:
+            toast.error('Erro interno do servidor. Tente novamente mais tarde.');
+            break;
+          default:
+            toast.error('Ocorreu um erro inesperado. Tente novamente.');
+        }
+      } else {
+        // Caso o erro não tenha uma resposta do servidor (como problemas de rede)
+        toast.error('Erro ao conectar ao servidor. Verifique sua conexão.');
+      }
     }
-    
+
   }
 
   const togglePasswordVisibility = () => setShowPassword(!showPassword);

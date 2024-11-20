@@ -19,13 +19,15 @@ export function SignIn() {
               <Weight size={150}/>
               <h1 className='text-md font-semibold'>Peso Perfeito</h1>
             </div>
-            <div className='mb-16'>
+            <div className='mb-16 flex flex-col items-center gap-4'>
               <SiginForm />
-            </div>
+
             <div className='flex gap-2 text-sm'>
-            <p> Não tem uma conta? </p>
-            <button className='font-bold' onClick={handleClickRegister}>Registre-se</button>
+              <p> Não tem uma conta? </p>
+              <button className='font-bold' onClick={handleClickRegister}>Registre-se</button>
             </div>
+            </div>
+            
 
         </div>
         <div className='flex flex-row items-center justify-center hidden md:block lg:mr-36 md:mr-20'>

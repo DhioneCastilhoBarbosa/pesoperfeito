@@ -9,11 +9,14 @@ import {
   FormMessage,
 } from "@/components/ui/form"
 import { Input } from "@/components/ui/input"
+import api from "@/services/api"
+import { AxiosError } from 'axios';
 import { Eye, EyeClosed } from "lucide-react"
 import { useState } from "react"
 import { useForm } from "react-hook-form"
 import { useNavigate } from "react-router-dom"
-//import{toast} from 'sonner'
+import { toast } from "sonner"
+
 
 
 
@@ -22,7 +25,7 @@ export function RegisterForm() {
   const[email,setEmail]= useState('')
   const[username,setUsername]= useState('')
   const[password, SetPassword]=useState('')
-  //const[confirmPassword, SetConfirmPassword]=useState('')
+  const[confirmPassword, SetConfirmPassword]=useState('')
   const [showPassword, setShowPassword] = useState(false);
   const [showConfirmPassword, setShowConfirmPassword] = useState(false);
   const navigate = useNavigate()
@@ -45,13 +48,35 @@ export function RegisterForm() {
 
   function handleConfirmPassword(event: React.ChangeEvent<HTMLInputElement>){
     (event.target.value)
-    console.log(password)
+    SetConfirmPassword(event.target.value)
+    console.log(confirmPassword)
   }
 
   async function handleClickRegister(event: React.FormEvent<HTMLFormElement>){
     event.preventDefault()
-    
-    navigate("/")
+    try{
+        if(password !== confirmPassword){
+          toast.error('A semha e confirmacao de senha nao sao identicas. Verifique e tente novamente.')
+        }else{
+        await api.post('/api/register',{email, username, password})
+        toast.success('Usuário registrado com sucesso!')
+        navigate("/")
+        }
+    }
+    catch(error){
+      if(error instanceof AxiosError){
+        switch (error.response?.status) {
+          case 500:
+            toast.error('Erro ao registrar usuário.');
+            break;
+          default:
+            toast.error('Ocorreu um erro inesperado. Tente novamente.');
+        }
+      }else {
+        // Caso o erro não tenha uma resposta do servidor (como problemas de rede)
+        toast.error('Erro ao conectar ao servidor. Verifique sua conexão.');
+      }
+    }
   }
   
 
@@ -116,7 +141,7 @@ export function RegisterForm() {
 
           )}
         />
-        <Button className= "w-96"type="submit">Registrar</Button>
+        <Button className= "w-96"type="submit" >Registrar</Button>
       </form>
       
     </Form>
