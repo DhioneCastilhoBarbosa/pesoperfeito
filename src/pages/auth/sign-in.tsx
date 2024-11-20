@@ -14,7 +14,7 @@ export function SignIn() {
     <>
       <Helmet title="Login" />
       <div className="flex flex-row items-center h-full justify-between">
-        <div className="lg:w-2/5 sm:w-full h-full flex flex-col items-center justify-around gap-8 px-6  bg-indigo-200">
+        <div className="lg:w-2/5 w-full h-full flex flex-col items-center justify-around gap-8 px-6  bg-indigo-200">
             <div className='flex flex-col items-center justify-center'>
               <Weight size={150}/>
               <h1 className='text-md font-semibold'>Peso Perfeito</h1>

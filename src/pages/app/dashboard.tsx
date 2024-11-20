@@ -240,11 +240,11 @@ export function Dashboard() {
             <h1 className='text-2xl font-bold'>Tickets</h1>
            </div>
 
-        <div className='flex gap-3 items-center justify-between mb-1'>
+        <div className='flex flex-col md:flex-row gap-3 items-center justify-between mb-1'>
            
-          <div className='flex  gap-6 items-end'>
+          <div className='flex flex-col md:flex-row gap-6 md:items-end items-start'>
             
-            <div className={`px-3 w-72 py-1.5 border rounded-lg flex items-baseline gap-3 focus:border-indigo-200 ${isFocused ? 'border-indigo-200 border-2' : 'border-black/10'}`}
+            <div className={`px-3 md:w-72 w-full py-1.5 border rounded-lg flex items-baseline gap-3 focus:border-indigo-200 ${isFocused ? 'border-indigo-200 border-2' : 'border-black/10'}`}
               tabIndex={0} // Permite que a div seja focada usando o teclado
               onFocus={handleFocus}
               onBlur={handleBlur}
@@ -283,8 +283,8 @@ export function Dashboard() {
             </div>
           </div>
 
-          <div className='flex items-center justify-center gap-4 '>
-            <div className='flex flex-col items-center justify-start bg-indigo-200 p-2 rounded-md w-36 h-28'>
+          <div className='flex items-center md:justify-center justify-between gap-4 w-full md:w-auto'>
+            <div className='flex flex-col items-center justify-start bg-indigo-200 p-2 rounded-md md:w-36 w-32 h-28 '>
               <p className='text-sm text-white font-semibold'>Total de Tickes</p>
               <Separator/>
               <div className='flex items-center gap-1 pt-4 text-2xl font-bold'>
@@ -293,7 +293,7 @@ export function Dashboard() {
               </div>
             </div>
 
-            <div className='flex flex-col items-center justify-start bg-indigo-200 p-2 rounded-md w-36 h-28'>
+            <div className='flex flex-col items-center justify-start bg-indigo-200 p-2 rounded-md md:w-36 w-32 h-28'>
               <p className='text-sm text-white font-semibold'>Peso Bruto total</p>
               <Separator/>
               <div className='flex items-center gap-1 pt-4 text-2xl font-bold'>
@@ -303,7 +303,7 @@ export function Dashboard() {
               </div>
             </div>
 
-            <div className='flex flex-col items-center justify-start bg-indigo-200 p-2 rounded-md w-36 h-28'>
+            <div className='flex flex-col items-center justify-start bg-indigo-200 p-2 rounded-md md:w-36 w-32 h-28'>
               <p className='text-sm text-white font-semibold'>Peso liquido total</p>
               <Separator/>
               <div className='flex items-center gap-1 pt-4 text-2xl font-bold'>
