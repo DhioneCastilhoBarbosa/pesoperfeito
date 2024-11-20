@@ -1,4 +1,4 @@
-import { ChevronLeft, ChevronRight, ChevronsLeft, ChevronsRight, Search, Ticket, Weight } from 'lucide-react';
+import { ChevronLeft, ChevronRight, Search, Ticket, Weight } from 'lucide-react';
 import { Helmet } from 'react-helmet-async';
 import { Table } from './components/table/table';
 import { TableHearder } from './components/table/table-header';
