@@ -285,7 +285,7 @@ export function Dashboard() {
             </div>
 
             <div className='pl-2'>
-              <DownloadData/>
+              <DownloadData data={tickets}/>
             </div>
           </div>
 
