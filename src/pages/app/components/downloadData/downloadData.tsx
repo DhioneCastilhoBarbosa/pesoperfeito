@@ -3,9 +3,7 @@ import { Button } from "@/components/ui/button";
 import { Download, Loader2 } from "lucide-react";
 import { useState } from "react";
 
-interface DownloadProps{
-  loading: boolean;
-}
+
 export default function DownloadData(){
   const [loading, setLoading] = useState(false)
 
