@@ -8,6 +8,7 @@ import { IconButton } from './components/icon-button';
 import { useState, useEffect } from 'react';
 import { Separator } from '@/components/ui/separator';
 import api from '@/services/api';
+import DownloadData from './components/downloadData/downloadData';
 
 type FetchTicketsParams = {
   clientName?: string; // Nome do cliente é obrigatório
@@ -164,8 +165,9 @@ export function Dashboard() {
             endDate,
           });
           setTickets(searchedTickets);
-        
-      } else {
+
+    
+      }else{
         const evaluatedKey = keysCache[currentPage] || null;
         await fetchTickets(currentPage, evaluatedKey);
       }
@@ -240,9 +242,9 @@ export function Dashboard() {
             <h1 className='text-2xl font-bold'>Tickets</h1>
            </div>
 
-        <div className='flex flex-col md:flex-row gap-3 items-center justify-between mb-1'>
+        <div className='flex flex-col md:flex-row gap-3 items-center justify-between mb-1 '>
            
-          <div className='flex flex-col md:flex-row gap-6 md:items-end items-start'>
+          <div className='flex flex-col md:flex-row gap-6 md:items-end items-start border border-indigo-400 py-5 px-10 rounded-md'>
             
             <div className={`px-3 md:w-72 w-full py-1.5 border rounded-lg flex items-baseline gap-3 focus:border-indigo-200 ${isFocused ? 'border-indigo-200 border-2' : 'border-black/10'}`}
               tabIndex={0} // Permite que a div seja focada usando o teclado
@@ -261,7 +263,7 @@ export function Dashboard() {
             </div>
             <div className='flex gap-4 items-center  justify-center'>
               
-            <div className='flex flex-col gap-1'>
+            <div className='flex flex-col gap-1 '>
               <p>Data inicial</p>
               <input
                 type="date"
@@ -281,10 +283,14 @@ export function Dashboard() {
               />
               </div>
             </div>
+
+            <div className='pl-2'>
+              <DownloadData/>
+            </div>
           </div>
 
           <div className='flex items-center md:justify-center justify-between gap-4 w-full md:w-auto'>
-            <div className='flex flex-col items-center justify-start bg-indigo-200 p-2 rounded-md md:w-36 w-32 h-28 '>
+            <div className='flex flex-col items-center justify-start bg-indigo-200 p-2 rounded-md md:w-36 w-32 h-28 shadow-lg transform transition-transform duration-300 hover:scale-110'>
               <p className='text-sm text-white font-semibold'>Total de Tickes</p>
               <Separator/>
               <div className='flex items-center gap-1 pt-4 text-2xl font-bold'>
@@ -293,7 +299,7 @@ export function Dashboard() {
               </div>
             </div>
 
-            <div className='flex flex-col items-center justify-start bg-indigo-200 p-2 rounded-md md:w-36 w-32 h-28'>
+            <div className='flex flex-col items-center justify-start bg-indigo-200 p-2 rounded-md md:w-36 w-32 h-28 shadow-lg transform transition-transform duration-300 hover:scale-110'>
               <p className='text-sm text-white font-semibold'>Peso Bruto total</p>
               <Separator/>
               <div className='flex items-center gap-1 pt-4 text-2xl font-bold'>
@@ -303,7 +309,7 @@ export function Dashboard() {
               </div>
             </div>
 
-            <div className='flex flex-col items-center justify-start bg-indigo-200 p-2 rounded-md md:w-36 w-32 h-28'>
+            <div className='flex flex-col items-center justify-start bg-indigo-200 p-2 rounded-md md:w-36 w-32 h-28 shadow-lg transform transition-transform duration-300 hover:scale-110'>
               <p className='text-sm text-white font-semibold'>Peso liquido total</p>
               <Separator/>
               <div className='flex items-center gap-1 pt-4 text-2xl font-bold'>
