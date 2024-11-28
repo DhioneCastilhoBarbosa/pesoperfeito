@@ -11,8 +11,8 @@ import api from '@/services/api';
 import DownloadData from './components/downloadData/downloadData';
 
 type FetchTicketsParams = {
-  clientName?: string; // Nome do cliente é obrigatório
-  ticketID?: string; // ticket id
+  clientName?: string; // Nome do cliente
+  placa?: string; // ticket id
   startDate?: string; // Data inicial é opcional
   endDate?: string;   // Data final é opcional
 };
@@ -42,20 +42,24 @@ export function Dashboard() {
   const [keysCache, setKeysCache] = useState<{ [key: number]: any }>({});
   const [totalNetWeight, setTotalNetWeight] = useState<string>('0');
   const [totalGrossWeight, setTotalGrossWeight] = useState<string>('0');
+  const [totalPages, setTotalPages] = useState(0);
   
   const itemPerPage = 10
 
- 
+  const isLicensePlate = (term: string) => {
+    // Ajuste o padrão conforme necessário para o formato de placa específico
+    const licensePlatePattern = /^[A-Z]{3}-[0-9]{4}$/i;
+    return licensePlatePattern.test(term);
+  };
 
  
-
   const fetchTicketsByClient = async ({
     clientName,
+    placa,
     startDate,
     endDate,
   }: FetchTicketsParams): Promise<Ticket[]> => {
     try {
-      
       const token = localStorage.getItem('token');
       if (!token) {
         console.error('Token de autorização não encontrado');
@@ -64,10 +68,11 @@ export function Dashboard() {
   
       const response = await api.get<FetchTicketsResponse>('/api/tickets-by-client-name', {
         headers: {
-          Authorization: `Bearer ${token}`, // Adiciona o cabeçalho de autenticação
+          Authorization: `Bearer ${token}`, 
         },
         params: {
           clientName,
+          placa,
           startDate,
           endDate,
         },
@@ -76,6 +81,7 @@ export function Dashboard() {
       if (response.data && Array.isArray(response.data.items)) {
         setTicketTotals(response.data.items.length.toString());
         // Calcula os totais de peso bruto e peso líquido
+        setTotalPages(0)
         const { totalGrossWeight, totalNetWeight } = response.data.items.reduce(
           (totals, item) => {
             return {
@@ -144,6 +150,8 @@ export function Dashboard() {
         setTicketTotals(response.data.totalItems);
         setTotalNetWeight(response.data.totalPesoLiquido);
         setTotalGrossWeight(response.data.totalPesoBruto)
+        setTotalPages(Math.ceil(Number(response.data.totalItems) / itemPerPage));
+        
       } else {
         console.error('A resposta da API não contém "items" ou não é válida.');
       }
@@ -157,31 +165,52 @@ export function Dashboard() {
   
   useEffect(() => {
     const fetchData = async () => {
-      if (searchTerm) {
+      console.log("busca:", searchTerm)
+      const trimmedSearchTerm = searchTerm.trim();
+      if (trimmedSearchTerm ) {
+       
+        const searchParams: FetchTicketsParams = isLicensePlate(trimmedSearchTerm)
+        ?{placa: trimmedSearchTerm}
+        :{clientName: trimmedSearchTerm};
 
           const searchedTickets = await fetchTicketsByClient({
-            clientName: searchTerm,
+           ...searchParams,
             startDate,
             endDate,
           });
           setTickets(searchedTickets);
-
-    
+          
       }else{
         const evaluatedKey = keysCache[currentPage] || null;
         await fetchTickets(currentPage, evaluatedKey);
+        
       }
     };
     fetchData();
+    
   }, [searchTerm, startDate, endDate, currentPage]);
   
 
-  const totalPages = Math.ceil(Number(TicketTotals) / itemPerPage);
+  //setTotalPages (Math.ceil(Number(TicketTotals) / itemPerPage))
   
   const handleSearch = (event: React.ChangeEvent<HTMLInputElement>) => {
+    
     setSearchTerm(event.target.value);
     setTickets([]); // Limpa os tickets para evitar dados antigos
     setCurrentPage(1); // Reseta a página para 1 ao buscar
+
+    /*if (event.target.value.trim() === '') {
+      const fetchData = async () => {
+        const evaluatedKey = keysCache[1] || null;
+        await fetchTickets(1, null);
+        setTotalPages(Math.ceil(Number(TicketTotals) / itemPerPage));
+        console.log("entre aqui",)
+      };
+      fetchData();
+    }*/
+
+    
+
   };
 
   const handleStartDateChange = (event: React.ChangeEvent<HTMLInputElement>) => {
@@ -255,7 +284,7 @@ export function Dashboard() {
               <input 
                 type="text" 
                 className='bg-transparent flex-1 outline-none border-0 p-0 text-sm focus:ring-0 '
-                placeholder='Buscar por ticket ou Cliente'
+                placeholder='Buscar por Cliente ou Placa'
                 value={searchTerm}
                 onChange={handleSearch}
               />
