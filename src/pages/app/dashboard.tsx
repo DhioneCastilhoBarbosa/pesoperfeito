@@ -43,13 +43,20 @@ export function Dashboard() {
   const [totalNetWeight, setTotalNetWeight] = useState<string>('0');
   const [totalGrossWeight, setTotalGrossWeight] = useState<string>('0');
   const [totalPages, setTotalPages] = useState(0);
+  const [searchDisplay, setSearchDisplay] = useState(false);
+
+  const [inputValue, setInputValue] = useState("");
   
   const itemPerPage = 10
 
   const isLicensePlate = (term: string) => {
-    // Ajuste o padrão conforme necessário para o formato de placa específico
-    const licensePlatePattern = /^[A-Z]{3}-[0-9]{4}$/i;
-    return licensePlatePattern.test(term);
+    if (term.includes('-')) {
+      const oldPattern = /^[A-Z]{3}-[0-9]{4}$/i;
+      return oldPattern.test(term);
+    }else{
+      const mercosulPattern = /^[A-Z]{3}[0-9][A-Z][0-9]{2}$/i;
+      return mercosulPattern.test(term)
+    }
   };
 
  
@@ -81,7 +88,7 @@ export function Dashboard() {
       if (response.data && Array.isArray(response.data.items)) {
         setTicketTotals(response.data.items.length.toString());
         // Calcula os totais de peso bruto e peso líquido
-        setTotalPages(0)
+        setTotalPages(1)
         const { totalGrossWeight, totalNetWeight } = response.data.items.reduce(
           (totals, item) => {
             return {
@@ -112,11 +119,12 @@ export function Dashboard() {
   
   async function fetchTickets(page = 1, evaluatedKey: any = null) {
     // Se já temos a página no cache, reutilize-a
-    if (pagesCache[page]) {
+    
+    /*if (pagesCache[page]) {
       setTickets(pagesCache[page]);
       setLastEvaluatedKey(keysCache[page]);
       return;
-    }
+    }*/
   
     
     try {
@@ -135,6 +143,8 @@ export function Dashboard() {
           lastEvaluatedKey: evaluatedKey,
         },
       });
+
+      //console.log("response", response.data)
   
       if (response.data && Array.isArray(response.data.items)) {
         const newTickets = response.data.items;
@@ -151,27 +161,29 @@ export function Dashboard() {
         setTotalNetWeight(response.data.totalPesoLiquido);
         setTotalGrossWeight(response.data.totalPesoBruto)
         setTotalPages(Math.ceil(Number(response.data.totalItems) / itemPerPage));
-        
+        return response.data.items;
       } else {
         console.error('A resposta da API não contém "items" ou não é válida.');
+        return [];
       }
     } catch (error) {
       console.error('Erro ao buscar tickets:', error);
+      return [];
     } finally {
      
-    }
+    } 
   }
   
   
   useEffect(() => {
     const fetchData = async () => {
-      console.log("busca:", searchTerm)
+      
       const trimmedSearchTerm = searchTerm.trim();
-      if (trimmedSearchTerm ) {
-       
+      if (trimmedSearchTerm && startDate === '' && endDate === '') {
         const searchParams: FetchTicketsParams = isLicensePlate(trimmedSearchTerm)
         ?{placa: trimmedSearchTerm}
         :{clientName: trimmedSearchTerm};
+
 
           const searchedTickets = await fetchTicketsByClient({
            ...searchParams,
@@ -179,38 +191,36 @@ export function Dashboard() {
             endDate,
           });
           setTickets(searchedTickets);
+          setSearchDisplay(true);
           
-      }else{
+      }else if(trimmedSearchTerm==='' && startDate.length>0 && endDate.length>0){
+        const searchedTickets = await fetchTicketsByClient({
+           startDate,
+           endDate,
+         });
+         setTickets(searchedTickets);
+         setSearchDisplay(true);
+      } else{
         const evaluatedKey = keysCache[currentPage] || null;
         await fetchTickets(currentPage, evaluatedKey);
+        setSearchDisplay(false);
         
       }
     };
     fetchData();
     
-  }, [searchTerm, startDate, endDate, currentPage]);
+  }, [searchTerm, startDate, endDate, currentPage,]);
   
 
-  //setTotalPages (Math.ceil(Number(TicketTotals) / itemPerPage))
+  
   
   const handleSearch = (event: React.ChangeEvent<HTMLInputElement>) => {
-    
-    setSearchTerm(event.target.value);
+    const value = event.target.value;
+    setSearchTerm(value);
     setTickets([]); // Limpa os tickets para evitar dados antigos
-    setCurrentPage(1); // Reseta a página para 1 ao buscar
-
-    /*if (event.target.value.trim() === '') {
-      const fetchData = async () => {
-        const evaluatedKey = keysCache[1] || null;
-        await fetchTickets(1, null);
-        setTotalPages(Math.ceil(Number(TicketTotals) / itemPerPage));
-        console.log("entre aqui",)
-      };
-      fetchData();
-    }*/
-
-    
-
+    setCurrentPage(1); // Reseta a página para 1 ao busca
+    setInputValue(value);
+  
   };
 
   const handleStartDateChange = (event: React.ChangeEvent<HTMLInputElement>) => {
@@ -266,32 +276,32 @@ export function Dashboard() {
       <Helmet title="Tickets"/>
       <div className='flex flex-col gap-4 mb-20 relative'>
 
-      <div className='flex  items-center gap-3'>
+      <div className='flex items-center gap-3'>
             <Ticket className='rotate-45 size-10'/>
             <h1 className='text-2xl font-bold'>Tickets</h1>
-           </div>
+      </div>
 
         <div className='flex flex-col md:flex-row gap-3 items-center justify-between mb-1 '>
            
-          <div className='flex flex-col md:flex-row gap-6 md:items-end items-start border border-indigo-400 py-5 px-10 rounded-md'>
+          <div className='flex flex-col md:flex-row gap-6 md:items-end items-start border border-indigo-400 py-5 px-10 rounded-md w-full md:w-auto'>
             
             <div className={`px-3 md:w-72 w-full py-1.5 border rounded-lg flex items-baseline gap-3 focus:border-indigo-200 ${isFocused ? 'border-indigo-200 border-2' : 'border-black/10'}`}
-              tabIndex={0} // Permite que a div seja focada usando o teclado
+              tabIndex={0} 
               onFocus={handleFocus}
               onBlur={handleBlur}
             >
               <Search className='size-4 text-indigo-500'/>
               <input 
                 type="text" 
-                className='bg-transparent flex-1 outline-none border-0 p-0 text-sm focus:ring-0 '
+                className='bg-transparent flex-1 outline-none border-0 p-0 text-sm focus:ring-0 md:w-44'
                 placeholder='Buscar por Cliente ou Placa'
-                value={searchTerm}
+                value={inputValue}
                 onChange={handleSearch}
               />
 
             </div>
-            <div className='flex gap-4 items-center  justify-center'>
-              
+
+            <div className='flex flex-row gap-4 items-center justify-between w-full md:justify-center md:w-auto'>
             <div className='flex flex-col gap-1 '>
               <p>Data inicial</p>
               <input
@@ -313,25 +323,25 @@ export function Dashboard() {
               </div>
             </div>
 
-            <div className='pl-2'>
+            <div className='flex  w-full md:pl-2'>
               <DownloadData data={tickets}/>
             </div>
           </div>
 
           <div className='flex items-center md:justify-center justify-between gap-4 w-full md:w-auto'>
             <div className='flex flex-col items-center justify-start bg-indigo-200 p-2 rounded-md md:w-36 w-32 h-28 shadow-lg transform transition-transform duration-300 hover:scale-110'>
-              <p className='text-sm text-white font-semibold'>Total de Tickes</p>
+              <p className='text-xs md:text-sm text-white font-semibold'>Total de Tickes</p>
               <Separator/>
-              <div className='flex items-center gap-1 pt-4 text-2xl font-bold'>
+              <div className='flex items-center gap-1 pt-4 text-2xl font-bold text-lg md:text-2xl'>
                 <Ticket/>
               {TicketTotals}
               </div>
             </div>
 
             <div className='flex flex-col items-center justify-start bg-indigo-200 p-2 rounded-md md:w-36 w-32 h-28 shadow-lg transform transition-transform duration-300 hover:scale-110'>
-              <p className='text-sm text-white font-semibold'>Peso Bruto total</p>
+              <p className='text-xs md:text-sm text-white font-semibold'>Peso Bruto total</p>
               <Separator/>
-              <div className='flex items-center gap-1 pt-4 text-2xl font-bold'>
+              <div className='flex items-center gap-1 pt-4 font-bold text-lg md:text-2xl'>
                 <Weight/>
               {totalGrossWeight}
               <p>Kg</p>
@@ -339,9 +349,9 @@ export function Dashboard() {
             </div>
 
             <div className='flex flex-col items-center justify-start bg-indigo-200 p-2 rounded-md md:w-36 w-32 h-28 shadow-lg transform transition-transform duration-300 hover:scale-110'>
-              <p className='text-sm text-white font-semibold'>Peso liquido total</p>
+              <p className='text-xs md:text-sm text-white font-semibold'>Peso liquido total</p>
               <Separator/>
-              <div className='flex items-center gap-1 pt-4 text-2xl font-bold'>
+              <div className='flex items-center gap-1 pt-4 text-2xl font-bold text-lg md:text-2xl'>
                 <Weight/>
               {totalNetWeight}
               <p>Kg</p>
@@ -349,9 +359,9 @@ export function Dashboard() {
             </div>
         </div>
 
-        </div>
+       </div>
         
-        {tickets.length === 0 ?(
+        {tickets.length === 0  ?(
           <div className='flex items-center justify-center rounded-lg text-center text-red-500 border border-red-400 h-24'>
             Nenhum ticket encontrado.
           </div>
@@ -359,9 +369,7 @@ export function Dashboard() {
         <Table >
           <thead className='rounded-lg'>
             <tr>
-              <TableHearder className='rounded-tl-lg' style={{width:64}}>
-                
-              </TableHearder>
+             
               <TableHearder>Ticket</TableHearder>
               <TableHearder>Cliente</TableHearder>
               <TableHearder>MTR</TableHearder>
@@ -380,9 +388,7 @@ export function Dashboard() {
             {tickets.map((ticket)=>{
               return(
                <TableRow key={ticket.ticketId}>
-                  <TableCell>
-                    <input type="checkbox" className='size-4 bg-black/20 rounded border-indigo-600/10' />
-                  </TableCell>
+                  
                   <TableCell>{ticket.ticketId}</TableCell>
                   <TableCell>
                       <span className='font-semibold text-indigo-400'>{ticket.cliente}</span>
@@ -416,7 +422,7 @@ export function Dashboard() {
           <tfoot>
             <tr >
             <TableCell className='bg-indigo-200 text-indigo-500 rounded-bl-md'colSpan={3}>
-              Mostrando {currentPage*10} de {TicketTotals} itens
+             {!searchDisplay ? ( `Mostrando ${currentPage*10} de ${TicketTotals} itens`) : (`Total de ${TicketTotals} itens encontrados`)}
             </TableCell>
             <TableCell className='text-right bg-indigo-200 text-indigo-500 rounded-br-md' colSpan={10}>
               <div className='inline-flex items-center gap-8'>

@@ -81,9 +81,9 @@ export default function DownloadData({data}: DownloadDataProps){
   
   
   return(
-    <div>
+    <div className=" w-full md:w-32">
       <Button 
-      className=" flex items-center justify-center  bg-indigo-400 hover:bg-indigo-300 shadow-lg w-32 "
+      className=" flex items-center justify-center  bg-indigo-400 hover:bg-indigo-300 shadow-lg w-full "
       onClick={handleDownload}
       >
         
